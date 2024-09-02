@@ -1,4 +1,63 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const previous = ref(null);
+const current = ref("");
+const operator = ref(null);
+const operatorClicked = ref(false);
+
+const clear = () => {
+  current.value = "";
+};
+const sign = () => {
+  current.value =
+    current.value.charAt(0) === "-"
+      ? current.value.slice(1)
+      : `-${current.value}`;
+};
+const percent = () => {
+  current.value = `${parseFloat(current.value) / 100}`;
+};
+const append = (num) => {
+  if (operatorClicked.value) {
+    current.value = "";
+    operatorClicked.value = false;
+  }
+  current.value = `${current.value}${num}`;
+};
+const dot = () => {
+  if (current.value.indexOf(".") === -1) {
+    append(".");
+  }
+};
+const setPrevious = () => {
+  previous.value = current.value;
+  operatorClicked.value = true;
+};
+const divide = () => {
+  operator.value = (a, b) => b / a;
+  setPrevious();
+};
+const times = () => {
+  operator.value = (a, b) => a * b;
+  setPrevious();
+};
+const minus = () => {
+  operator.value = (a, b) => b - a;
+  setPrevious();
+};
+const add = () => {
+  operator.value = (a, b) => a + b;
+  setPrevious();
+};
+const equal = () => {
+  current.value = `${operator.value(
+    parseFloat(current.value),
+    parseFloat(previous.value)
+  )}`;
+  previous.value = null;
+};
+</script>
 
 <template>
   <div class="calculator">
@@ -10,7 +69,7 @@
     <div @click="append('7')" class="btn">7</div>
     <div @click="append('8')" class="btn">8</div>
     <div @click="append('9')" class="btn">9</div>
-    <div @click="times" class="btn operator">X</div>
+    <div @click="times" class="btn operator">x</div>
     <div @click="append('4')" class="btn">4</div>
     <div @click="append('5')" class="btn">5</div>
     <div @click="append('6')" class="btn">6</div>
@@ -47,12 +106,12 @@
 }
 
 .btn {
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   border: 1px solid #999;
   text-align: center;
-  cursor: pointer;           
+  cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;   
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .btn:hover {
